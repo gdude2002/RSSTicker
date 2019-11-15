@@ -24,6 +24,8 @@ var ITEM_TEMPLATE = '' +
 
 var entries = [];
 var root = get_root();
+var current_index = 0;
+var skip_scroll = true;
 
 function get_root() {
   return document.getElementById("content");
@@ -112,6 +114,11 @@ function loop() {
       root.appendChild(element);
     }
 
+    current_index = 0;
+    var elements = document.getElementsByClassName("scroll-container");
+    elements.item(current_index).scrollIntoView();
+    skip_scroll = true;
+
     set_loader(false);
   });
 }
@@ -126,20 +133,23 @@ function start() {
   setInterval(doScroll, 10000);  // Every 10 seconds
 }
 
-var current_index = 0;
-
 function doScroll() {
-    var elements = document.getElementsByClassName("scroll-container");
-    var final_index = elements.length;
+  if (skip_scroll) {
+    skip_scroll = false;
+    return;
+  }
 
-    if (final_index > 0) {
-      elements.item(current_index).scrollIntoView();
-      current_index++;
+  var elements = document.getElementsByClassName("scroll-container");
+  var final_index = elements.length;
 
-      if (current_index >= final_index) {
-          current_index = 0;
-      }
+  if (final_index > 0) {
+    elements.item(current_index).scrollIntoView();
+    current_index++;
+
+    if (current_index >= final_index) {
+        current_index = 0;
     }
+  }
 }
 
 start();
