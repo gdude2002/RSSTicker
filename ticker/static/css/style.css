@@ -9,14 +9,3 @@ html {
 .scroll-container {
     padding-top: 1rem;
 }
-
-img {
-    border-radius: 5px;
-    height: 256px !important;
-    object-fit: cover;
-    width: 192px !important;
-}
-
-.media {
-    min-height: 256px;
-}

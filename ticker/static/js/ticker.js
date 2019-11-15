@@ -1,24 +1,22 @@
 "use strict";
 
 var JSON_URL = "/feed.json";
-var IMAGE_TEMPLATE = 'background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url({IMAGE_URL}); background-size: cover;';
+var IMAGE_TEMPLATE = 'background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url({IMAGE_URL}); background-size: cover;';
 
 var ITEM_TEMPLATE = '' +
 '<div class="scroll-container">' +
   '<div class="card has-text-white" style="{IMAGE}">' +
     '<div class="card-content">' +
-      '<div class="media-content">' +
-        '<div class="content">' +
-          '<p>' +
-            '<strong class="has-text-white">{TITLE}</strong>' +
-            '<br />' +
-            '<span class="tag is-pulled-right {COLOUR_CLASS}">{TAG}</span>' +
-            '<small><em>{AUTHOR}</em></small>' +
-            '<br />' +
-            '<br />' +
-            '{DESCRIPTION}' +
-          '</p>' +
-        '</div>' +
+      '<div class="content">' +
+        '<p>' +
+          '<strong class="has-text-white">{TITLE}</strong>' +
+          '<br />' +
+          '<span class="tag is-pulled-right {COLOUR_CLASS}">{TAG}</span>' +
+          '<small><em>{AUTHOR}</em></small>' +
+          '<br />' +
+          '<br />' +
+          '{DESCRIPTION}' +
+        '</p>' +
       '</div>' +
     '</div>' +
   '</div>' +
