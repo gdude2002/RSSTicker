@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    print(request.headers.get('User-Agent'))
+    app.logger.info(request.headers.get('User-Agent'))
     return render_template("index.html")
 
 
