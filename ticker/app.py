@@ -1,9 +1,10 @@
 import secrets
+from os import environ
 
+import git
 import feedparser
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify, render_template, request
-from os import environ
 
 FEED_URL = environ["FEED_URL"]
 
@@ -23,6 +24,12 @@ app = Flask(__name__)
 def index():
     app.logger.warning(request.user_agent.string)
     return render_template("index.html", rand_val=secrets.token_urlsafe(32))
+
+
+@app.route("/version")
+def version():
+    repo = git.Repo(search_parent_directories=True)
+    return str(repo.head.object.hexsha)
 
 
 @app.route("/feed.json")

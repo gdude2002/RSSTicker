@@ -1,6 +1,8 @@
 "use strict";
 
 var JSON_URL = "/feed.json";
+var VERSION_URL = "/version";
+
 var IMAGE_TEMPLATE = 'background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url({IMAGE_URL}); background-size: cover;';
 
 var ITEM_TEMPLATE = '' +
@@ -22,10 +24,36 @@ var ITEM_TEMPLATE = '' +
   '</div>' +
 '</div>';
 
+var app_version = null;
+var current_index = 0;
 var entries = [];
 var root = get_root();
-var current_index = 0;
 var skip_scroll = true;
+
+function check_version() {
+  var request = new XMLHttpRequest();
+
+  request.onreadystatechange = function() {
+    if (request.readyState === 4) {
+      if (app_version === null) {
+        app_version = request.responseText;
+        console.log("Current version:", app_version);
+      } else {
+        if (app_version !== request.responseText) {
+          console.log("New version detected, reloading...", request.responseText);
+          set_loader(true);
+
+          setTimeout(function() {
+            location.reload(true);
+          }, 2000)  // 2 seconds
+        }
+      }
+    }
+  };
+
+  request.open("GET", VERSION_URL);
+  request.send();
+}
 
 function get_root() {
   return document.getElementById("content");
@@ -127,13 +155,15 @@ function start() {
   console.log("Starting...");
 
   loop();
-  doScroll();
+  do_scroll();
+  check_version();
 
   setInterval(loop, 60000);  // Every minute
-  setInterval(doScroll, 10000);  // Every 10 seconds
+  setInterval(do_scroll, 10000);  // Every 10 seconds
+  setInterval(check_version, 10000);  // Every 10 seconds
 }
 
-function doScroll() {
+function do_scroll() {
   if (skip_scroll) {
     skip_scroll = false;
     return;

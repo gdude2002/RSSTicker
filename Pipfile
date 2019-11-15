@@ -10,6 +10,7 @@ pre-commit = "*"
 flask = "*"
 feedparser = "*"
 beautifulsoup4 = "*"
+gitpython = "*"
 
 [requires]
 python_version = "3"
