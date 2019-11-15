@@ -1,3 +1,5 @@
+import secrets
+
 import feedparser
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify, render_template, request
@@ -20,7 +22,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     app.logger.warning(request.user_agent.string)
-    return render_template("index.html")
+    return render_template("index.html", rand_val=secrets.token_urlsafe(32))
 
 
 @app.route("/feed.json")
