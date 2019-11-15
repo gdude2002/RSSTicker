@@ -138,9 +138,8 @@ function start() {
   doScroll();
 
   setInterval(loop, 60_000);  // Every minute
+  setInterval(doScroll, 10_000);  // Every 10 seconds
 }
-
-start();
 
 var current_index = 0;
 
@@ -156,6 +155,6 @@ function doScroll() {
           current_index = 0;
       }
     }
-
-    setTimeout(doScroll, 10_000);
 }
+
+start();

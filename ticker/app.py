@@ -1,9 +1,7 @@
-from os import environ
-
 import feedparser
 from bs4 import BeautifulSoup
-from flask import Flask, render_template, jsonify
-
+from flask import Flask, jsonify, render_template, request
+from os import environ
 
 FEED_URL = environ["FEED_URL"]
 
@@ -21,6 +19,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+    print(request.headers.get('User-Agent'))
     return render_template("index.html")
 
 
