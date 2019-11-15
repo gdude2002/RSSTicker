@@ -1,32 +1,26 @@
 "use strict";
 
 var JSON_URL = "/feed.json";
-
-var IMAGE_TEMPLATE = '' +
-'<figure class="media-left">' +
-  '<div class="image">' +
-    '<img alt="{ALT_TEXT}" src="{IMAGE_URL}" />' +
-  '</div>' +
-'</figure>';
+var IMAGE_TEMPLATE = 'background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url({IMAGE_URL}); background-size: cover;';
 
 var ITEM_TEMPLATE = '' +
 '<div class="scroll-container">' +
-  '<div class="notification {COLOUR_CLASS}"">' +
-    '<article class="media">' +
-      '{IMAGE}' +
+  '<div class="card has-text-white" style="{IMAGE}">' +
+    '<div class="card-content">' +
       '<div class="media-content">' +
         '<div class="content">' +
           '<p>' +
-            '<strong>{TITLE}</strong>' +
+            '<strong class="has-text-white">{TITLE}</strong>' +
             '<br />' +
-            '<small>{TAG} ({AUTHOR})</small>' +
+            '<span class="tag is-pulled-right {COLOUR_CLASS}">{TAG}</span>' +
+            '<small><em>{AUTHOR}</em></small>' +
             '<br />' +
             '<br />' +
             '{DESCRIPTION}' +
           '</p>' +
         '</div>' +
       '</div>' +
-    '</article>' +
+    '</div>' +
   '</div>' +
 '</div>';
 
@@ -89,13 +83,6 @@ function loop() {
 
       if (entry.image) {
         var image_template = IMAGE_TEMPLATE.replace("{IMAGE_URL}", entry.image);
-
-        if (entry.image_alt) {
-          image_template = image_template.replace("{ALT_TEXT}", entry.image_alt);
-        } else {
-          image_template = image_template.replace("{ALT_TEXT}", "");
-        }
-
         template = template.replace("{IMAGE}", image_template);
       } else {
         template = template.replace("{IMAGE}", "");
