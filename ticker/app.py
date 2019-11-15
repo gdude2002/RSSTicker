@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from flask import Flask, jsonify, render_template, request
 
 FEED_URL = environ["FEED_URL"]
-
 TAGS = {}
 
 
@@ -16,6 +15,10 @@ for key, value in environ.items():
 
     if key.startswith("TAG_"):
         TAGS[key[4:].replace("_", " ")] = value
+
+
+VERSION = str(git.Repo(search_parent_directories=True).head.object.hexsha)
+
 
 app = Flask(__name__)
 
@@ -28,8 +31,7 @@ def index():
 
 @app.route("/version")
 def version():
-    repo = git.Repo(search_parent_directories=True)
-    return str(repo.head.object.hexsha)
+    return VERSION
 
 
 @app.route("/feed.json")
