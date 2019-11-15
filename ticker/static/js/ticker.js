@@ -1,47 +1,44 @@
 "use strict";
 
-const JSON_URL = "/feed.json";
+var JSON_URL = "/feed.json";
 
-const IMAGE_TEMPLATE = `
-      <figure class="media-left">
-        <div class="image">
-          <img alt="{ALT_TEXT}" src="{IMAGE_URL}" />
-        </div>
-      </figure>
-`;
+var IMAGE_TEMPLATE = '' +
+'<figure class="media-left">' +
+  '<div class="image">' +
+    '<img alt="{ALT_TEXT}" src="{IMAGE_URL}" />' +
+  '</div>' +
+'</figure>';
 
-const ITEM_TEMPLATE = `
-<div class="scroll-container">
-  <div class="notification {COLOUR_CLASS}"">
-    <article class="media">
-      {IMAGE}
+var ITEM_TEMPLATE = '' +
+'<div class="scroll-container">' +
+  '<div class="notification {COLOUR_CLASS}"">' +
+    '<article class="media">' +
+      '{IMAGE}' +
+      '<div class="media-content">' +
+        '<div class="content">' +
+          '<p>' +
+            '<strong>{TITLE}</strong>' +
+            '<br />' +
+            '<small>{TAG} ({AUTHOR})</small>' +
+            '<br />' +
+            '<br />' +
+            '{DESCRIPTION}' +
+          '</p>' +
+        '</div>' +
+      '</div>' +
+    '</article>' +
+  '</div>' +
+'</div>';
 
-      <div class="media-content">
-        <div class="content">
-          <p>
-            <strong>{TITLE}</strong>
-            <br />
-            <small>{TAG} ({AUTHOR})</small>
-            <br />
-            <br />
-            {DESCRIPTION}
-          </p>
-        </div>
-      </div>
-    </article>
-  </div>
-</div>
-`;
-
-let entries = [];
-let root = get_root();
+var entries = [];
+var root = get_root();
 
 function get_root() {
   return document.getElementById("content");
 }
 
 function set_loader(active) {
-  let element = document.getElementById("loader");
+  var element = document.getElementById("loader");
 
   if (active) {
     element.classList.add("is-active");
@@ -50,73 +47,88 @@ function set_loader(active) {
   }
 }
 
-async function load_entries() {
-  let response = await fetch(JSON_URL);
-  return await response.json();
+function load_entries(callback) {
+  var request = new XMLHttpRequest();
+
+  request.onreadystatechange = function() {
+    if (request.readyState === 4 && request.status === 200) {
+      callback(JSON.parse(request.responseText));
+    } else if (request.readyState === 4) {
+      callback(null);
+    }
+  };
+
+  request.open("GET", JSON_URL);
+  request.send();
 }
 
-async function loop() {
+function loop() {
   console.log("Loading entries...");
-  let data = await load_entries();
-  let default_colour = data.tags.DEFAULT;
 
-  console.log("Entries:", data);
+  load_entries(function(data) {
+    if (data === null) {
+      console.error("Failed to load entries!");
+      return;
+    }
 
-  if (data.entries === entries) {
-    return;
-  }
+    var default_colour = data.tags.DEFAULT;
 
-  set_loader(true);
+    if (entries.length > 0 && data.entries[0].published === entries[0].published) {
+      console.log("Latest entry date matches, not recreating items");
+      return;
+    }
 
-  entries = data.entries;
-  root.innerHTML = "";  // Remove old entries
+    set_loader(true);
 
-  for (const entry of entries) {
-    let template = ITEM_TEMPLATE;
+    entries = data.entries;
+    root.innerHTML = "";  // Remove old entries
 
-    if (entry.image) {
-      console.log("Image found.");
-      let image_template = IMAGE_TEMPLATE.replace("{IMAGE_URL}", entry.image);
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      var template = ITEM_TEMPLATE;
 
-      if (entry.image_alt) {
-        image_template = image_template.replace("{ALT_TEXT}", entry.image_alt);
+      if (entry.image) {
+        var image_template = IMAGE_TEMPLATE.replace("{IMAGE_URL}", entry.image);
+
+        if (entry.image_alt) {
+          image_template = image_template.replace("{ALT_TEXT}", entry.image_alt);
+        } else {
+          image_template = image_template.replace("{ALT_TEXT}", "");
+        }
+
+        template = template.replace("{IMAGE}", image_template);
       } else {
-        image_template = image_template.replace("{ALT_TEXT}", "");
+        template = template.replace("{IMAGE}", "");
       }
 
-      template = template.replace("{IMAGE}", image_template);
-    } else {
-      console.log("No image found.");
-      template = template.replace("{IMAGE}", "");
-    }
+      template = template.replace("{TITLE}", entry.title);
+      template = template.replace("{AUTHOR}", entry.author);
+      template = template.replace("{DESCRIPTION}", entry.summary);
 
-    template = template.replace("{TITLE}", entry.title);
-    template = template.replace("{AUTHOR}", entry.author);
-    template = template.replace("{DESCRIPTION}", entry.summary);
+      var colour = default_colour;
+      var tag = "";
 
-    let colour = default_colour;
-    let tag = "";
+      for (var j = 0; j < entry.tags.length; j++) {
+        var entry_tag = entry.tags[j];
 
-    console.log("Tags:", entry.tags);
-
-    for (const entry_tag of entry.tags) {
-      if (entry_tag.toUpperCase() in data.tags) {
-        colour = data.tags[entry_tag.toUpperCase()];
-        tag = entry_tag;
-        break;
+        if (entry_tag.toUpperCase() in data.tags) {
+          colour = data.tags[entry_tag.toUpperCase()];
+          tag = entry_tag;
+          break;
+        }
       }
+
+      template = template.replace("{COLOUR_CLASS}", colour);
+      template = template.replace("{TAG}", tag);
+
+      var element = document.createElement("div");
+      element.innerHTML = template;
+
+      root.appendChild(element);
     }
 
-    template = template.replace("{COLOUR_CLASS}", colour);
-    template = template.replace("{TAG}", tag);
-
-    let element = document.createElement("div");
-    element.innerHTML = template;
-
-    root.appendChild(element);
-  }
-
-  set_loader(false);
+    set_loader(false);
+  });
 }
 
 function start() {
@@ -125,16 +137,16 @@ function start() {
   loop();
   doScroll();
 
-  let interval_id = setInterval(loop, 300_000);
+  setInterval(loop, 60_000);  // Every minute
 }
 
 start();
 
-let current_index = 0;
+var current_index = 0;
 
 function doScroll() {
-    let elements = document.getElementsByClassName("scroll-container");
-    let final_index = elements.length;
+    var elements = document.getElementsByClassName("scroll-container");
+    var final_index = elements.length;
 
     if (final_index > 0) {
       elements.item(current_index).scrollIntoView();

@@ -39,6 +39,7 @@ def feed_json():
             "summary": entry.summary,
             "author": entry.author,
             "tags": [tag["term"] for tag in entry.tags],
+            "published": entry.published,
         }
 
         img_tag = BeautifulSoup(entry.content[0]["value"]).img
