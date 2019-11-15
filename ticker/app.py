@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    app.logger.info(request.headers.get('User-Agent'))
+    app.logger.warning(request.user_agent.string)
     return render_template("index.html")
 
 
@@ -41,7 +41,7 @@ def feed_json():
             "published": entry.published,
         }
 
-        img_tag = BeautifulSoup(entry.content[0]["value"]).img
+        img_tag = BeautifulSoup(entry.content[0]["value"], features="html.parser").img
 
         entry_data["image"] = img_tag.get("src") if img_tag else None
         entry_data["image_alt"] = img_tag.get("alt") if img_tag else None
