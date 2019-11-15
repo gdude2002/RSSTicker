@@ -1,3 +1,5 @@
+"use strict";
+
 var JSON_URL = "/feed.json";
 
 var IMAGE_TEMPLATE = '' +
@@ -135,8 +137,8 @@ function start() {
   loop();
   doScroll();
 
-  setInterval(loop, 60_000);  // Every minute
-  setInterval(doScroll, 10_000);  // Every 10 seconds
+  setInterval(loop, 60000);  // Every minute
+  setInterval(doScroll, 10000);  // Every 10 seconds
 }
 
 var current_index = 0;
