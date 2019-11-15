@@ -1,5 +1,3 @@
-"use strict";
-
 var JSON_URL = "/feed.json";
 
 var IMAGE_TEMPLATE = '' +
