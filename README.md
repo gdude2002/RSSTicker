@@ -59,5 +59,10 @@ in the feed entry is used, with the `TAG_DEFAULT` colour specified above.
 
 # Customisation
 
+If you have custom CSS to provide, simply create a file named `custom.css` in
+the `static/css` directory and it'll be included on the page as the last CSS
+file. This is preferred to modifying the CSS files that come with RSSTicker,
+as doing so could cause conflicts when you `git pull` to update.
+
 If you'd like to customise this app further than it allows for, please feel free
 to create a fork and use it for your own purposes - as far as the license allows. 
