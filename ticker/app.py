@@ -52,7 +52,13 @@ def feed_json():
             "published": entry.published,
         }
 
-        img_tag = BeautifulSoup(entry.content[0]["value"], features="html.parser").img
+        if "<p>" in entry.summary or "<img" in entry.summary:
+            entry_data["summary"] = ""  # It's a block of HTML, we can't have that
+
+        img_tag = None
+
+        if hasattr(entry, "content"):
+            img_tag = BeautifulSoup(entry.content[0]["value"], features="html.parser").img
 
         entry_data["image"] = img_tag.get("src") if img_tag else None
         entry_data["image_alt"] = img_tag.get("alt") if img_tag else None

@@ -4,6 +4,7 @@ var JSON_URL = "/feed.json";
 var VERSION_URL = "/version";
 
 var IMAGE_TEMPLATE = 'background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url({IMAGE_URL}); background-size: cover;';
+var NO_IMAGE_TEMPLATE = 'background: rgb(50, 50, 50)';
 
 var ITEM_TEMPLATE = '' +
 '<div class="scroll-container">' +
@@ -113,7 +114,7 @@ function loop() {
         var image_template = IMAGE_TEMPLATE.replace("{IMAGE_URL}", entry.image);
         template = template.replace("{IMAGE}", image_template);
       } else {
-        template = template.replace("{IMAGE}", "");
+        template = template.replace("{IMAGE}", NO_IMAGE_TEMPLATE);
       }
 
       template = template.replace("{TITLE}", entry.title);
