@@ -44,6 +44,9 @@ def feed_json():
     }
 
     for entry in parsed.entries:
+        if not hasattr(entry, "tags"):
+            entry.tags = []
+
         entry_data = {
             "title": entry.title,
             "summary": entry.summary,

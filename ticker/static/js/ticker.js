@@ -91,6 +91,11 @@ function loop() {
   load_entries(function(data) {
     if (data === null) {
       console.error("Failed to load entries!");
+
+      var loader = document.getElementById("loader");
+      loader.classList.add("is-danger");
+      loader.firstChild.textContent = "Failed, retrying..."
+
       return;
     }
 
@@ -149,6 +154,11 @@ function loop() {
     skip_scroll = true;
 
     set_loader(false);
+
+
+    var loader = document.getElementById("loader");
+    loader.classList.remove("is-danger");
+    loader.firstChild.textContent = "Loading..."
   });
 }
 
